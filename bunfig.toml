@@ -1,0 +1,6 @@
+[test]
+coverage = true
+
+[install]
+exact = true
+registry = "https://registry.npmjs.org"

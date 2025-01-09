@@ -1,0 +1,44 @@
+{
+  "name": "markdown-renderer",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "dev:react": "bunx rspack serve --config rspack.react.config.js",
+    "dev:vue": "bunx rspack serve --config rspack.vue.config.js",
+    "build:react": "bunx rspack build --config rspack.react.config.js",
+    "build:vue": "bunx rspack build --config rspack.vue.config.js",
+    "build:types": "tsc --emitDeclarationOnly",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "unified": "^11.0.0",
+    "remark-parse": "^11.0.0",
+    "remark-rehype": "^11.0.0",
+    "rehype-stringify": "^10.0.0",
+    "remark-gfm": "^4.0.0",
+    "remark-math": "^6.0.0",
+    "rehype-katex": "^7.0.0",
+    "rehype-highlight": "7.0.1",
+    "vue": "^3.3.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "hast-util-to-jsx-runtime": "^2.0.1"
+  },
+  "devDependencies": {
+    "@rspack/cli": "1.1.1",
+    "@rspack/core": "1.1.1",
+    "babel-loader": "^9.0.0",
+    "vue-loader": "^17.0.1",
+    "style-loader": "4.0.0",
+    "css-loader": "7.1.2",
+    "@babel/preset-env": "^7.22.0",
+    "@babel/preset-react": "^7.22.0",
+    "@babel/preset-typescript": "^7.22.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}
