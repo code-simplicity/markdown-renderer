@@ -1,11 +1,11 @@
-import rehypeHighlight from 'rehype-highlight';
-import rehypeKatex from 'rehype-katex';
-import rehypeStringify from 'rehype-stringify';
-import remarkGfm from 'remark-gfm';
-import remarkMath from 'remark-math';
+import { unified } from 'unified';
 import remarkParse from 'remark-parse';
 import remarkRehype from 'remark-rehype';
-import { unified } from 'unified';
+import remarkGfm from 'remark-gfm';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+import rehypeHighlight from 'rehype-highlight';
+import rehypeStringify from 'rehype-stringify';
 
 interface MarkdownParserOptions {
   components?: Record<string, unknown>;
@@ -16,26 +16,21 @@ interface MarkdownParserOptions {
 }
 
 export class MarkdownParser {
-  private processor: ReturnType<typeof unified>;
-  private options: MarkdownParserOptions;
+  // biome-ignore lint/suspicious/noExplicitAny: Unified processor type is complex
+  private processor: any;
 
   constructor(options: MarkdownParserOptions = {}) {
-    this.options = options;
-    this.initProcessor();
-  }
-
-  private initProcessor(): void {
     this.processor = unified()
       .use(remarkParse)
       .use(remarkGfm)
       .use(remarkMath)
       .use(remarkRehype, {
         allowDangerousHtml: true,
-        allowedElements: this.options.allowedElements,
-        disallowedElements: this.options.disallowedElements,
+        allowedElements: options.allowedElements,
+        disallowedElements: options.disallowedElements,
       })
       .use(rehypeKatex)
-      .use(rehypeHighlight, this.options.highlight || {})
+      .use(rehypeHighlight, options.highlight || {})
       .use(rehypeStringify);
   }
 
@@ -46,7 +41,7 @@ export class MarkdownParser {
       }
 
       const result = await this.processor.process(markdown);
-      return result.value.toString();
+      return result.toString();
     } catch (error) {
       console.error('Markdown parsing error:', error);
       return null;

@@ -1,4 +1,4 @@
-import React, { ComponentType, HTMLAttributes, useEffect, useState } from 'react';
+import { useEffect, useState, type ComponentType, type HTMLAttributes } from 'react';
 import { MarkdownParser } from '../core/parser';
 
 interface ReactMarkdownProps {
@@ -74,5 +74,10 @@ export function ReactMarkdown({
     return <div className="markdown-empty">Loading...</div>;
   }
 
-  return <div className={className} dangerouslySetInnerHTML={{ __html: content }} />;
+  return (
+    <div 
+      className={className}
+      dangerouslySetInnerHTML={{ __html: content }}
+    />
+  );
 }
