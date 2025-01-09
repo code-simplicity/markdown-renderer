@@ -10,7 +10,10 @@
     "build:react": "bunx rspack build --config rspack.react.config.js",
     "build:vue": "bunx rspack build --config rspack.vue.config.js",
     "build:types": "tsc --emitDeclarationOnly",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "format": "biome format --write .",
+    "lint": "biome check .",
+    "lint:fix": "biome check --apply ."
   },
   "dependencies": {
     "unified": "^11.0.0",
@@ -39,6 +42,7 @@
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "@types/node": "^20.0.0",
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "@biomejs/biome": "1.4.1"
   }
 }

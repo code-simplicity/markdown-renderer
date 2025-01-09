@@ -1,8 +1,8 @@
-import React from 'react';
-import { createRoot } from 'react-dom/client';
-import { ReactMarkdown } from '../../src/index'; 
 import 'highlight.js/styles/github.css';
 import 'katex/dist/katex.css';
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import { ReactMarkdown } from '../../src/index';
 import './styles.css';
 
 console.log('Script loaded');
@@ -14,7 +14,7 @@ This is a **bold** text and *italic* text.
 
 \`\`\`javascript
 function hello() {
-  console.log('Hello World!');
+	console.log('Hello World!');
 }
 \`\`\`
 
@@ -29,9 +29,7 @@ function App() {
 	console.log('App component rendering');
 	return (
 		<div style={{ padding: '20px' }}>
-			<ReactMarkdown className="markdown-body">
-				{markdownContent}
-			</ReactMarkdown>
+			<ReactMarkdown className="markdown-body">{markdownContent}</ReactMarkdown>
 		</div>
 	);
 }
@@ -40,12 +38,12 @@ function App() {
 document.addEventListener('DOMContentLoaded', () => {
 	console.log('DOM loaded, looking for root element');
 	const rootElement = document.getElementById('root');
-	
+
 	if (!rootElement) {
 		console.error('Root element not found!');
 		return;
 	}
-	
+
 	console.log('Root element found, creating React root');
 	try {
 		const root = createRoot(rootElement);
