@@ -1,6 +1,6 @@
 import 'highlight.js/styles/github.css';
 import 'katex/dist/katex.css';
-import React from 'react';
+import * as React from 'react';
 import { createRoot } from 'react-dom/client';
 import { ReactMarkdown } from '../../src/index';
 import './styles.css';

@@ -23,10 +23,21 @@ export function ReactMarkdown({
   disallowedElements,
   highlight,
 }: ReactMarkdownProps) {
+  console.log('ReactMarkdown component rendered with props:', {
+    children,
+    className,
+    components,
+    urlTransform,
+    allowedElements,
+    disallowedElements,
+    highlight,
+  });
+
   const [content, setContent] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    console.log('ReactMarkdown useEffect triggered');
     const parser = new MarkdownParser({
       components,
       urlTransform,
@@ -45,6 +56,7 @@ export function ReactMarkdown({
 
         console.log('Parsing markdown:', children);
         const html = await parser.parse(children);
+        console.log('Parser result:', html);
 
         if (!html) {
           console.error('Failed to parse markdown to HTML');
@@ -52,7 +64,7 @@ export function ReactMarkdown({
           return;
         }
 
-        console.log('Generated HTML:', html);
+        console.log('Setting content with HTML:', html);
         setContent(html);
         setError(null);
       } catch (error) {
@@ -66,14 +78,19 @@ export function ReactMarkdown({
     parseMarkdown();
   }, [children, components, urlTransform, allowedElements, disallowedElements, highlight]);
 
+  console.log('Current state:', { content, error });
+
   if (error) {
+    console.error('Rendering error state:', error);
     return <div className="markdown-error">Error: {error}</div>;
   }
 
   if (!content) {
+    console.log('Rendering loading state');
     return <div className="markdown-empty">Loading...</div>;
   }
 
+  console.log('Rendering markdown content');
   return (
     <div 
       className={className}

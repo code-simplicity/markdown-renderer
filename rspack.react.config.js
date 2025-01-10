@@ -1,5 +1,7 @@
 import path from 'path';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 
+/** @type {import('@rspack/cli').Configuration} */
 export default {
   mode: 'development',
   entry: {
@@ -19,7 +21,12 @@ export default {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['@babel/preset-env', '@babel/preset-react', '@babel/preset-typescript'],
+            presets: [
+              '@babel/preset-env',
+              ['@babel/preset-react', { runtime: 'automatic' }],
+              '@babel/preset-typescript',
+            ],
+            cacheDirectory: true,
           },
         },
       },
@@ -33,30 +40,35 @@ export default {
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
     alias: {
       '@': path.resolve(process.cwd(), 'src'),
+      react: path.resolve(process.cwd(), 'node_modules/react'),
+      'react-dom': path.resolve(process.cwd(), 'node_modules/react-dom'),
     },
   },
   devtool: 'source-map',
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+    },
+  },
   devServer: {
     hot: true,
     open: true,
+    historyApiFallback: true,
     static: {
       directory: path.join(process.cwd(), 'examples/react'),
-      publicPath: '/',
-      serveIndex: true,
-      watch: true,
     },
-    historyApiFallback: true,
-    compress: true,
-    port: 8084,
+    port: 8080,
     host: 'localhost',
+    allowedHosts: 'all',
     client: {
       overlay: true,
-    },
-    setupMiddlewares: (middlewares, devServer) => {
-      if (!devServer) {
-        throw new Error('webpack-dev-server is not defined');
-      }
-      return middlewares;
+      progress: true,
     },
   },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: './examples/react/index.html',
+      inject: true,
+    }),
+  ],
 };

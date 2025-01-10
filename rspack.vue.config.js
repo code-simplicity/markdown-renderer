@@ -1,24 +1,38 @@
 import path from 'path';
+import { VueLoaderPlugin } from 'vue-loader';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import webpack from 'webpack';
 
+/** @type {import('@rspack/cli').Configuration} */
 export default {
-  entry: './examples/vue/main.js',
+  mode: 'development',
+  entry: {
+    main: './examples/vue/main.ts',
+  },
   output: {
     path: path.resolve(process.cwd(), 'dist/vue'),
-    filename: 'bundle.js',
+    filename: '[name].bundle.js',
+    publicPath: '/',
+    clean: true,
   },
   module: {
     rules: [
       {
         test: /\.vue$/,
-        use: 'vue-loader',
+        loader: 'vue-loader',
       },
       {
-        test: /\.js$/,
+        test: /\.(jsx?|tsx?)$/,
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['@babel/preset-env'],
+            presets: [
+              '@babel/preset-env',
+              '@babel/preset-typescript',
+            ],
+            plugins: ['@vue/babel-plugin-jsx'],
+            cacheDirectory: true,
           },
         },
       },
@@ -29,12 +43,42 @@ export default {
     ],
   },
   resolve: {
-    extensions: ['.js', '.vue'],
-  },
-  devtool: 'source-map',
-  builtins: {
-    vue: {
-      development: true,
+    extensions: ['.js', '.jsx', '.ts', '.tsx', '.vue'],
+    alias: {
+      '@': path.resolve(process.cwd(), 'src'),
+      'vue': '@vue/runtime-dom',
     },
   },
+  devtool: 'source-map',
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+    },
+  },
+  devServer: {
+    hot: true,
+    open: true,
+    historyApiFallback: true,
+    static: {
+      directory: path.join(process.cwd(), 'examples/vue'),
+    },
+    port: 8081,
+    host: 'localhost',
+    allowedHosts: 'all',
+    client: {
+      overlay: true,
+      progress: true,
+    },
+  },
+  plugins: [
+    new VueLoaderPlugin(),
+    new HtmlWebpackPlugin({
+      template: './examples/vue/index.html',
+      inject: true,
+    }),
+    new webpack.DefinePlugin({
+      __VUE_OPTIONS_API__: JSON.stringify(true),
+      __VUE_PROD_DEVTOOLS__: JSON.stringify(false),
+    }),
+  ],
 };
