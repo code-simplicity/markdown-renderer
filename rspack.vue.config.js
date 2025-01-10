@@ -46,7 +46,7 @@ export default {
     extensions: ['.js', '.jsx', '.ts', '.tsx', '.vue'],
     alias: {
       '@': path.resolve(process.cwd(), 'src'),
-      'vue': '@vue/runtime-dom',
+      vue: '@vue/runtime-dom',
     },
   },
   devtool: 'source-map',
