@@ -1,6 +1,6 @@
 import path from 'path';
-import { VueLoaderPlugin } from 'vue-loader';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import { VueLoaderPlugin } from 'vue-loader';
 import webpack from 'webpack';
 
 /** @type {import('@rspack/cli').Configuration} */
@@ -27,10 +27,7 @@ export default {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: [
-              '@babel/preset-env',
-              '@babel/preset-typescript',
-            ],
+            presets: ['@babel/preset-env', '@babel/preset-typescript'],
             plugins: ['@vue/babel-plugin-jsx'],
             cacheDirectory: true,
           },

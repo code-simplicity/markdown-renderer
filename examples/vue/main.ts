@@ -1,7 +1,7 @@
-import { createApp, h } from 'vue';
-import { VueMarkdown } from '../../src/index';
 import 'highlight.js/styles/github.css';
 import 'katex/dist/katex.css';
+import { createApp, h } from 'vue';
+import { VueMarkdown } from '../../src/index';
 import './styles.css';
 
 const markdownContent = `
@@ -25,12 +25,13 @@ Math equation: $E = mc^2$
 const app = createApp({
   name: 'App',
   setup() {
-    return () => h('div', { style: { padding: '20px' } }, [
-      h(VueMarkdown, {
-        class: 'markdown-body',
-        content: markdownContent,
-      }),
-    ]);
+    return () =>
+      h('div', { style: { padding: '20px' } }, [
+        h(VueMarkdown, {
+          class: 'markdown-body',
+          content: markdownContent,
+        }),
+      ]);
   },
 });
 
