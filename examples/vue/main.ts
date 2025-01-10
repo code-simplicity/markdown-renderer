@@ -4,8 +4,6 @@ import 'highlight.js/styles/github.css';
 import 'katex/dist/katex.css';
 import './styles.css';
 
-console.log('Script loaded');
-
 const markdownContent = `
 # Hello Markdown
 
@@ -13,7 +11,7 @@ This is a **bold** text and *italic* text.
 
 \`\`\`javascript
 function hello() {
-	console.log('Hello World!');
+  console.log('Hello World!');
 }
 \`\`\`
 
@@ -25,33 +23,21 @@ Math equation: $E = mc^2$
 `;
 
 const app = createApp({
-	name: 'App',
-	setup() {
-		console.log('App component rendering');
-		return () => h('div', { style: { padding: '20px' } }, [
-			h(VueMarkdown, {
-				content: markdownContent,
-				className: 'markdown-body',
-			}),
-		]);
-	},
+  name: 'App',
+  setup() {
+    return () => h('div', { style: { padding: '20px' } }, [
+      h(VueMarkdown, {
+        class: 'markdown-body',
+        content: markdownContent,
+      }),
+    ]);
+  },
 });
 
-// 确保 DOM 已经加载
-document.addEventListener('DOMContentLoaded', () => {
-	console.log('DOM loaded, looking for root element');
-	const rootElement = document.getElementById('app');
+const rootElement = document.getElementById('app');
 
-	if (!rootElement) {
-		console.error('Root element not found!');
-		return;
-	}
+if (!rootElement) {
+  throw new Error('Failed to find app element');
+}
 
-	console.log('Root element found, mounting Vue app');
-	try {
-		app.mount(rootElement);
-		console.log('App mounted');
-	} catch (error) {
-		console.error('Error mounting Vue app:', error);
-	}
-});
+app.mount(rootElement);
