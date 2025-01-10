@@ -16,28 +16,17 @@ interface ReactMarkdownProps {
 
 export function ReactMarkdown({
   children,
-  className,
+  className = 'markdown-body',
   components = {},
   urlTransform,
   allowedElements,
   disallowedElements,
   highlight,
 }: ReactMarkdownProps) {
-  console.log('ReactMarkdown component rendered with props:', {
-    children,
-    className,
-    components,
-    urlTransform,
-    allowedElements,
-    disallowedElements,
-    highlight,
-  });
-
   const [content, setContent] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    console.log('ReactMarkdown useEffect triggered');
     const parser = new MarkdownParser({
       components,
       urlTransform,
@@ -49,28 +38,20 @@ export function ReactMarkdown({
     async function parseMarkdown() {
       try {
         if (!children) {
-          console.log('No markdown content provided');
           setContent(null);
           return;
         }
 
-        console.log('Parsing markdown:', children);
         const html = await parser.parse(children);
-        console.log('Parser result:', html);
 
         if (!html) {
-          console.error('Failed to parse markdown to HTML');
-          setContent(null);
-          return;
+          throw new Error('Failed to parse markdown content');
         }
 
-        console.log('Setting content with HTML:', html);
         setContent(html);
         setError(null);
-      } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-        console.error('Error rendering markdown:', error);
-        setError(errorMessage);
+      } catch (err) {
+        setError(err instanceof Error ? err : new Error('Unknown error'));
         setContent(null);
       }
     }
@@ -78,18 +59,13 @@ export function ReactMarkdown({
     parseMarkdown();
   }, [children, components, urlTransform, allowedElements, disallowedElements, highlight]);
 
-  console.log('Current state:', { content, error });
-
   if (error) {
-    console.error('Rendering error state:', error);
-    return <div className="markdown-error">Error: {error}</div>;
+    return <div className="markdown-error">{error.message}</div>;
   }
 
   if (!content) {
-    console.log('Rendering loading state');
     return <div className="markdown-empty">Loading...</div>;
   }
 
-  console.log('Rendering markdown content');
   return <div className={className} dangerouslySetInnerHTML={{ __html: content }} />;
 }

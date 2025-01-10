@@ -6,11 +6,7 @@ export const VueMarkdown = defineComponent({
   props: {
     content: {
       type: String,
-      default: '',
-    },
-    className: {
-      type: String,
-      default: '',
+      required: true,
     },
     components: {
       type: Object as PropType<Record<string, unknown>>,
@@ -18,75 +14,65 @@ export const VueMarkdown = defineComponent({
     },
     urlTransform: {
       type: Function as PropType<(url: string) => string>,
-      default: undefined,
     },
     allowedElements: {
       type: Array as PropType<string[]>,
-      default: () => [],
     },
     disallowedElements: {
       type: Array as PropType<string[]>,
-      default: () => [],
     },
     highlight: {
-      type: Object as PropType<{
-        theme?: string;
-        [key: string]: unknown;
-      }>,
-      default: () => ({}),
+      type: Boolean,
+      default: false,
     },
   },
   setup(props) {
-    const parser = new MarkdownParser({
-      components: props.components,
-      urlTransform: props.urlTransform,
-      allowedElements: props.allowedElements,
-      disallowedElements: props.disallowedElements,
-      highlight: props.highlight,
-    });
-
     const html = ref<string | null>(null);
-    const error = ref<string | null>(null);
-
-    async function parseMarkdown() {
-      try {
-        if (!props.content) {
-          console.log('No markdown content provided');
-          html.value = null;
-          return;
-        }
-
-        console.log('Parsing markdown:', props.content);
-        const parsedHtml = await parser.parse(props.content);
-
-        if (!parsedHtml) {
-          console.error('Failed to parse markdown to HTML');
-          html.value = null;
-          return;
-        }
-
-        console.log('Generated HTML:', parsedHtml);
-        html.value = parsedHtml;
-        error.value = null;
-      } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : 'Unknown error';
-        console.error('Error rendering markdown:', err);
-        error.value = errorMessage;
-        html.value = null;
-      }
-    }
+    const error = ref<Error | null>(null);
 
     watch(
-      () => props.content,
-      () => {
-        parseMarkdown();
+      () => [
+        props.content,
+        props.components,
+        props.urlTransform,
+        props.allowedElements,
+        props.disallowedElements,
+        props.highlight,
+      ],
+      async () => {
+        const parser = new MarkdownParser({
+          components: props.components,
+          urlTransform: props.urlTransform,
+          allowedElements: props.allowedElements,
+          disallowedElements: props.disallowedElements,
+          highlight: props.highlight,
+        });
+
+        try {
+          if (!props.content) {
+            html.value = null;
+            return;
+          }
+
+          const parsedHtml = await parser.parse(props.content);
+
+          if (!parsedHtml) {
+            throw new Error('Failed to parse markdown content');
+          }
+
+          html.value = parsedHtml;
+          error.value = null;
+        } catch (err) {
+          error.value = err instanceof Error ? err : new Error('Unknown error');
+          html.value = null;
+        }
       },
       { immediate: true }
     );
 
     return () => {
       if (error.value) {
-        return h('div', { class: 'markdown-error' }, `Error: ${error.value}`);
+        return h('div', { class: 'markdown-error' }, error.value.message);
       }
 
       if (!html.value) {
@@ -94,7 +80,7 @@ export const VueMarkdown = defineComponent({
       }
 
       return h('div', {
-        class: props.className,
+        class: 'markdown-body',
         innerHTML: html.value,
       });
     };
